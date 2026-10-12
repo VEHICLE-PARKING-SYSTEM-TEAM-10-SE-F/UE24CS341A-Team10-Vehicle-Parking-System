@@ -2,6 +2,7 @@
 
 SE Mini-Project **Part-2**. The backlog has one GitHub issue per functional and non-functional requirement in [SRS v1.1](SRS/Vehicle_Parking_System_SRS_v1.1.pdf) (FR, NFR and the SEC security NFRs), plus one setup/CI task. Each issue includes the requirement text exactly as written in the SRS, acceptance criteria taken from the [Test Plan v1.1](TestPlan/Vehicle_Parking_System_Test_Plan_v1.1.pdf), the story points, the assignee and the sprint. Each issue also has a link to the design in the [SAD v1.1](SAD/Team10_Vehicle_Parking_System_SAD.pdf).
 
+- **Project board (linked to this repo):** [https://github.com/users/pramitiudupa/projects/1](https://github.com/users/pramitiudupa/projects/1). It has **Story Points** and **Sprint** fields; group by Sprint or by Assignee.
 - **Issues:** [https://github.com/pramitiudupa/UE24CS341A-Team10-Vehicle-Parking-System/issues](https://github.com/pramitiudupa/UE24CS341A-Team10-Vehicle-Parking-System/issues), filterable by milestone **Sprint 1** / **Sprint 2**, by assignee, or by label `sp:N`
 - **Story points:** Fibonacci scale (1, 2, 3, 5), based on relative size and risk
 - **Dry run:** 12–16 Oct (practice sprint); the backlog may still be adjusted on 19 Oct
