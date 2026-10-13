@@ -31,7 +31,7 @@ A web-based system for managing parking slots and tracking vehicles. Parking att
 
 | # | Deliverable | Due | Where | Status |
 |---|---|---|---|---|
-| 1 | GitHub Project linked to the repo; backlog from SRS FRs/NFRs, story points, assignees, two sprints | 12-10-2026 | [Project board](https://github.com/users/pramitiudupa/projects/1) · [Issues](https://github.com/pramitiudupa/UE24CS341A-Team10-Vehicle-Parking-System/issues) · [`docs/Sprint-Plan.md`](docs/Sprint-Plan.md) | ✅ 38 stories, 105 story points |
+| 1 | GitHub Project linked to the repo; backlog from SRS FRs/NFRs, story points, assignees, two sprints | 12-10-2026 | [Project board](https://github.com/users/pramitiudupa/projects/1) · [Jira backlog](https://pramitiudupa.atlassian.net/jira/software/c/projects/VPS/boards/34/backlog) · [Issues](https://github.com/pramitiudupa/UE24CS341A-Team10-Vehicle-Parking-System/issues) · [`docs/Sprint-Plan.md`](docs/Sprint-Plan.md) | ✅ 38 stories, 105 story points |
 | 2 | Sprint 1: implementation, GitHub Actions, PRs, 1-minute video | 19–23 Oct 2026 | Milestone **Sprint 1** | Planned (63 SP) |
 | 3 | Sprint 2: implementation, 2-minute video, documentation, freeze | 26–30 Oct 2026 | Milestone **Sprint 2** | Planned (42 SP) |
 
