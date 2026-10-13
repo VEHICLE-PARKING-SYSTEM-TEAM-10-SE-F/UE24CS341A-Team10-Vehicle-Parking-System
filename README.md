@@ -62,8 +62,34 @@ Sequence diagrams: [Vehicle entry & slot allocation](docs/diagrams/seq_entry.png
 │   ├── diagrams/             # UML component, deployment and sequence diagrams (PNG)
 │   │   └── source/           # Python scripts that regenerate the diagrams and the SAD .docx
 │   └── course-material/      # Templates and instructions given by the course
-├── client/                   # React front end   (added in Sprint 1)
-└── server/                   # Express back end  (added in Sprint 1)
+├── .github/                  # GitHub Actions CI workflow + pull request template
+├── client/                   # React front end (Vite)
+└── server/                   # Express REST API + MongoDB (Mongoose), Jest tests
+```
+
+## Running the app locally
+
+You need Node.js 20 or newer. You don't need to install MongoDB.
+
+```bash
+# 1. API server
+cd server
+npm install
+cp .env.example .env        # then edit .env if needed
+npm run dev:db              # terminal 1: local MongoDB (prints MONGODB_URI)
+npm run dev                 # terminal 2: API on http://localhost:5000/api/v1
+
+# 2. Web client
+cd client
+npm install
+npm run dev                 # http://localhost:5173
+```
+
+Tests and lint run the same way locally and in GitHub Actions (`.github/workflows/ci.yml`):
+
+```bash
+cd server && npm run lint && npm test
+cd client && npm run lint && npm run build
 ```
 
 ## Regenerating the diagrams / SAD

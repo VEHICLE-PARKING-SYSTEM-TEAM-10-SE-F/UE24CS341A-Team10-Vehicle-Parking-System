@@ -27,3 +27,6 @@ Thumbs.db
 
 # Office temp files
 ~$*
+
+# Local MongoDB data (npm run dev:db)
+.dev-db/
