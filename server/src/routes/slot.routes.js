@@ -16,6 +16,23 @@ const slotSchema = Joi.object({
 
 router.use(authenticate);
 
+// FR-10: every slot with its status, and Available / Occupied counts per type (all logged-in users)
+router.get('/', authorize('ATTENDANT', 'ADMIN'), async (req, res, next) => {
+  try {
+    res.json({ slots: (await slotService.listSlots()).map(slotService.toDto) });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/summary', authorize('ATTENDANT', 'ADMIN'), async (req, res, next) => {
+  try {
+    res.json(await slotService.summary());
+  } catch (err) {
+    next(err);
+  }
+});
+
 // FR-08 (Administrator only - BR-05)
 router.post('/', authorize('ADMIN'), validate(slotSchema), async (req, res, next) => {
   try {

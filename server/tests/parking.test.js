@@ -4,7 +4,7 @@ const ParkingRecord = require('../src/models/ParkingRecord');
 const Slot = require('../src/models/Slot');
 const { startDb, clearDb, stopDb } = require('./helpers/db');
 const { createUser, loginAs } = require('./helpers/auth');
-const { addSlots, addVehicle } = require('./helpers/fixtures');
+const { addSlots, addVehicle, addDefaultRates } = require('./helpers/fixtures');
 
 const app = createApp();
 let token;
@@ -18,6 +18,7 @@ beforeEach(async () => {
   await addVehicle('KA01AB1234', 'CAR');
   await addVehicle('KA02CD5678', 'CAR');
   await addVehicle('KA03EF9012', 'TWO_WHEELER');
+  await addDefaultRates();
 });
 
 const entry = (body) => request(app).post('/api/v1/parking/entry').set('Authorization', `Bearer ${token}`).send(body);
