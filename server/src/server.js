@@ -4,6 +4,7 @@ const { createApp } = require('./app');
 const logger = require('./utils/logger');
 
 async function main() {
+  env.jwtSecret(); // fail fast if the token-signing secret is missing (SEC-07)
   await connect(env.mongodbUri());
   const app = createApp();
   app.listen(env.port, () => logger.info(`API listening on http://localhost:${env.port}/api/v1`));

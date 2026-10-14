@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const { corsOrigin } = require('./config/env');
 const logger = require('./utils/logger');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
+const { rejectUnsafeInput } = require('./middleware/validate');
+const authRoutes = require('./routes/auth.routes');
 
 function createApp() {
   const app = express();
@@ -23,9 +25,11 @@ function createApp() {
   });
 
   const api = express.Router();
+  api.use(rejectUnsafeInput); // SEC-05: no database operators or script content anywhere
   api.get('/health', (req, res) => {
     res.json({ status: 'ok', database: mongoose.connection.readyState === 1 ? 'up' : 'down' });
   });
+  api.use('/auth', authRoutes);
   app.use('/api/v1', api);
 
   app.use(notFound);
