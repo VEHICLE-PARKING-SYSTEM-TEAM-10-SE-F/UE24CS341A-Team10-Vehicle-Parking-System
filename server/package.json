@@ -9,6 +9,7 @@
     "dev": "node --watch src/server.js",
     "dev:db": "node scripts/dev-db.js",
     "seed": "node scripts/seed.js",
+    "smoke": "node scripts/smoke.js",
     "lint": "eslint src tests scripts",
     "test": "jest --runInBand"
   },

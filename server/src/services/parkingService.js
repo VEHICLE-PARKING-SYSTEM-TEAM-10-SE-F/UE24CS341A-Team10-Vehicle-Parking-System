@@ -4,6 +4,7 @@ const Counter = require('../models/Counter');
 const AppError = require('../utils/AppError');
 const vehicleService = require('./vehicleService');
 const slotService = require('./slotService');
+const feeService = require('./feeService');
 const { RECORD_STATUS } = require('../models/constants');
 
 const IST_OFFSET_MS = 330 * 60 * 1000;
@@ -75,15 +76,74 @@ async function findActiveRecord(regNo) {
   return record;
 }
 
-// FR-15: record the exit time (server time) in the vehicle's Active record.
-// The record stays Active until the attendant confirms the exit.
+// FR-15 – FR-17: record the exit time (server time), calculate the fee from the current
+// hourly rate and return the summary. The record stays Active until the exit is confirmed.
 async function recordExit({ regNo }) {
   const record = await findActiveRecord(regNo);
   const exitTime = new Date();
+  const fee = await feeService.calculate(record.vehicleType, record.entryTime, exitTime);
   record.exitTime = exitTime;
-  record.durationMin = (exitTime - record.entryTime) / 60000;
+  record.durationMin = fee.durationMinutes;
+  record.feePaise = fee.feePaise;
+  await record.save();
+  return { record, fee };
+}
+
+async function findByTicket(ticketNo) {
+  const record = await ParkingRecord.findOne({ ticketNo });
+  if (!record) throw new AppError(404, 'TICKET_NOT_FOUND', `Ticket ${ticketNo} not found`, 'ticketNo');
+  if (record.status === RECORD_STATUS.COMPLETED) {
+    throw new AppError(409, 'ALREADY_COMPLETED', `Ticket ${ticketNo} is already completed`, 'ticketNo');
+  }
+  if (!record.exitTime) {
+    throw new AppError(409, 'EXIT_NOT_RECORDED', 'Record the exit first to see the fee summary', 'ticketNo');
+  }
+  return record;
+}
+
+// FR-18: on confirmation, mark the record Completed with its fee and set the slot Available,
+// in one transaction (SAD SD-2 step 2).
+async function confirmExit(ticketNo) {
+  const session = await mongoose.startSession();
+  try {
+    let completed;
+    await session.withTransaction(async () => {
+      const record = await findByTicket(ticketNo);
+      completed = await ParkingRecord.findOneAndUpdate(
+        { _id: record._id, status: RECORD_STATUS.ACTIVE },
+        { $set: { status: RECORD_STATUS.COMPLETED } },
+        { new: true, session },
+      );
+      if (!completed) throw new AppError(409, 'ALREADY_COMPLETED', `Ticket ${ticketNo} is already completed`, 'ticketNo');
+      await slotService.release({ slotId: record.slotId, session });
+    }, { writeConcern: { w: 'majority', j: true } });
+    return completed;
+  } finally {
+    await session.endSession();
+  }
+}
+
+// The attendant cancelled the summary: the record stays Active with no exit time.
+async function cancelExit(ticketNo) {
+  const record = await findByTicket(ticketNo);
+  record.exitTime = null;
+  record.durationMin = null;
+  record.feePaise = null;
   await record.save();
   return record;
+}
+
+// FR-21: Parked (slot, entry time, elapsed duration) or Not Parked.
+async function currentStatus(vehicleId) {
+  const record = await ParkingRecord.findOne({ vehicleId, status: RECORD_STATUS.ACTIVE });
+  if (!record) return { status: 'NOT_PARKED' };
+  return {
+    status: 'PARKED',
+    ticketNo: record.ticketNo,
+    slotId: record.slotId,
+    entryTime: record.entryTime,
+    elapsedMin: Math.floor((Date.now() - record.entryTime) / 60000),
+  };
 }
 
 function toDto(r) {
@@ -95,8 +155,20 @@ function toDto(r) {
     entryTime: r.entryTime,
     exitTime: r.exitTime,
     durationMin: r.durationMin === null ? null : Math.round(r.durationMin),
+    fee: feeService.rupees(r.feePaise),
     status: r.status,
   };
 }
 
-module.exports = { recordEntry, recordExit, findActiveRecord, toDto };
+function toSummary({ record, fee }) {
+  return {
+    ...toDto(record),
+    billableHours: fee.billableHours,
+    hourlyRate: feeService.rupees(fee.hourlyRatePaise),
+    graceMinutes: feeService.GRACE_MINUTES,
+  };
+}
+
+module.exports = {
+  recordEntry, recordExit, confirmExit, cancelExit, currentStatus, findActiveRecord, toDto, toSummary,
+};

@@ -4,6 +4,7 @@ const authenticate = require('../middleware/authenticate');
 const authorize = require('../middleware/authorize');
 const { validate } = require('../middleware/validate');
 const vehicleService = require('../services/vehicleService');
+const parkingService = require('../services/parkingService');
 const { VEHICLE_TYPES } = require('../models/constants');
 
 const router = express.Router();
@@ -26,6 +27,21 @@ router.post('/', authorize('ATTENDANT', 'ADMIN'), validate(vehicleSchema), async
   try {
     const vehicle = await vehicleService.register(req.body);
     res.status(201).json(vehicleService.toDto(vehicle));
+  } catch (err) {
+    next(err);
+  }
+});
+
+// FR-20, FR-21: search by registration number and show the current status
+const searchSchema = Joi.object({
+  regNo: Joi.string().trim().pattern(REG_NO).required()
+    .messages({ 'string.pattern.base': 'regNo must be 4 to 15 letters or digits (hyphens and spaces allowed)' }),
+});
+
+router.get('/search', authorize('ATTENDANT', 'ADMIN'), validate(searchSchema, 'query'), async (req, res, next) => {
+  try {
+    const vehicle = await vehicleService.findActiveByRegNo(req.validated.regNo);
+    res.json({ vehicle: vehicleService.toDto(vehicle), current: await parkingService.currentStatus(vehicle._id) });
   } catch (err) {
     next(err);
   }
