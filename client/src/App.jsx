@@ -5,14 +5,17 @@ import Vehicles from './pages/Vehicles.jsx';
 import SlotAdmin from './pages/SlotAdmin.jsx';
 import Entry from './pages/Entry.jsx';
 import Exit from './pages/Exit.jsx';
+import Slots from './pages/Slots.jsx';
+import Search from './pages/Search.jsx';
 
 // Navigation shows only the functions allowed for the logged-in role (SRS 3.1).
 // Each entry: [path, label, roles allowed].
 export const NAV = [
-  ['/', 'Home', ['ATTENDANT', 'ADMIN']],
+  ['/', 'Slots', ['ATTENDANT', 'ADMIN']],
   ['/entry', 'Entry', ['ATTENDANT', 'ADMIN']],
   ['/exit', 'Exit', ['ATTENDANT', 'ADMIN']],
-  ['/vehicles', 'Vehicles', ['ATTENDANT', 'ADMIN']],
+  ['/search', 'Search', ['ATTENDANT', 'ADMIN']],
+  ['/vehicles', 'Register Vehicle', ['ATTENDANT', 'ADMIN']],
   ['/admin/slots', 'Slot Management', ['ADMIN']],
 ];
 
@@ -41,16 +44,6 @@ function TopBar() {
   );
 }
 
-function Home() {
-  const { user } = useAuth();
-  return (
-    <section className="card">
-      <h2>Welcome, {user.name}</h2>
-      <p className="muted">Use the menu above to work with vehicles, slots and parking.</p>
-    </section>
-  );
-}
-
 export default function App() {
   return (
     <AuthProvider>
@@ -59,12 +52,13 @@ export default function App() {
         <main>
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route path="/" element={<RequireAuth><Home /></RequireAuth>} />
+            <Route path="/" element={<RequireAuth><Slots /></RequireAuth>} />
+            <Route path="/search" element={<RequireAuth roles={['ATTENDANT', 'ADMIN']}><Search /></RequireAuth>} />
             <Route path="/entry" element={<RequireAuth roles={['ATTENDANT', 'ADMIN']}><Entry /></RequireAuth>} />
             <Route path="/exit" element={<RequireAuth roles={['ATTENDANT', 'ADMIN']}><Exit /></RequireAuth>} />
             <Route path="/vehicles" element={<RequireAuth roles={['ATTENDANT', 'ADMIN']}><Vehicles /></RequireAuth>} />
             <Route path="/admin/slots" element={<RequireAuth roles={['ADMIN']}><SlotAdmin /></RequireAuth>} />
-            <Route path="*" element={<RequireAuth><Home /></RequireAuth>} />
+            <Route path="*" element={<RequireAuth><Slots /></RequireAuth>} />
           </Routes>
         </main>
       </div>
