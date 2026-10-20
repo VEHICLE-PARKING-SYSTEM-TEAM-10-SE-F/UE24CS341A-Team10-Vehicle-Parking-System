@@ -1,0 +1,15 @@
+{
+  "name": "vps-e2e",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Browser tests against the running app: NFR-06 usability (TC-USAB-01, timed part) and NFR-07 portability (TC-PORT-01)",
+  "scripts": {
+    "install-browsers": "playwright install chromium firefox webkit",
+    "test": "playwright test",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "dotenv": "^18.0.8"
+  }
+}
