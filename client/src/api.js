@@ -34,7 +34,7 @@ export async function api(path, { method = 'GET', body } = {}) {
 
   if (!res.ok) {
     const err = data?.error || {};
-    if (res.status === 401 && token) onUnauthorized();
+    if (res.status === 401 && token) onUnauthorized(err.code, err.message);
     throw new ApiError(res.status, err.code || 'ERROR', err.message || 'Request failed', err.field || null);
   }
   return data;

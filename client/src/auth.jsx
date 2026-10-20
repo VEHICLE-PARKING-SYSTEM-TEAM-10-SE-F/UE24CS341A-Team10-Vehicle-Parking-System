@@ -7,18 +7,24 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  // Message shown on the login page, e.g. after the 15-minute idle timeout (SEC-06).
+  const [notice, setNotice] = useState('');
 
   const clear = useCallback(() => {
     setToken(null);
     setUser(null);
   }, []);
 
-  useEffect(() => setUnauthorizedHandler(clear), [clear]);
+  useEffect(() => setUnauthorizedHandler((code, message) => {
+    if (code === 'SESSION_EXPIRED') setNotice(message);
+    clear();
+  }), [clear]);
 
   const login = useCallback(async (username, password) => {
     const res = await api('/auth/login', { method: 'POST', body: { username, password } });
     setToken(res.token);
     setUser(res.user);
+    setNotice('');
     return res.user;
   }, []);
 
@@ -30,7 +36,7 @@ export function AuthProvider({ children }) {
     }
   }, [clear]);
 
-  const value = useMemo(() => ({ user, login, logout }), [user, login, logout]);
+  const value = useMemo(() => ({ user, notice, login, logout }), [user, notice, login, logout]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
