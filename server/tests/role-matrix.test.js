@@ -1,5 +1,5 @@
 // SEC-01, SEC-02, FR-05: every endpoint against the SAD §4.3 role matrix (TC-SEC-01, TC-SEC-02).
-// Endpoints added in Sprint 2 (users, fee-rates, reports) are added to this table when they exist.
+// New endpoints are added to this table as they are built.
 const request = require('supertest');
 const { createApp } = require('../src/app');
 const { startDb, clearDb, stopDb } = require('./helpers/db');
@@ -21,6 +21,10 @@ const MATRIX = [
   ['post', '/parking/exit', ['ATTENDANT', 'ADMIN']],
   ['post', '/parking/T-20261019-0001/confirm-exit', ['ATTENDANT', 'ADMIN']],
   ['post', '/parking/T-20261019-0001/cancel-exit', ['ATTENDANT', 'ADMIN']],
+  ['get', '/users', ['ADMIN']],
+  ['post', '/users', ['ADMIN']],
+  ['put', '/users/000000000000000000000000', ['ADMIN']],
+  ['patch', '/users/000000000000000000000000/status', ['ADMIN']],
 ];
 
 beforeAll(async () => {
