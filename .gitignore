@@ -30,3 +30,7 @@ Thumbs.db
 
 # Local MongoDB data (npm run dev:db)
 .dev-db/
+
+# Playwright reports (e2e) - may contain typed test values
+e2e/test-results/
+e2e/playwright-report/
