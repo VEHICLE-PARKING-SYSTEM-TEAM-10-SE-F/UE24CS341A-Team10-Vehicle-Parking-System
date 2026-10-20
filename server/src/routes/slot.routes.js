@@ -14,6 +14,9 @@ const slotSchema = Joi.object({
   slotType: Joi.string().valid(...VEHICLE_TYPES).required(),
 });
 
+const statusSchema = Joi.object({ status: Joi.string().valid('AVAILABLE', 'UNAVAILABLE').required() });
+const slotIdParam = Joi.object({ slotId: Joi.string().pattern(/^[A-Za-z0-9-]{1,12}$/).required() });
+
 router.use(authenticate);
 
 // FR-10: every slot with its status, and Available / Occupied counts per type (all logged-in users)
@@ -38,6 +41,15 @@ router.post('/', authorize('ADMIN'), validate(slotSchema), async (req, res, next
   try {
     const slot = await slotService.createSlot(req.body);
     res.status(201).json(slotService.toDto(slot));
+  } catch (err) {
+    next(err);
+  }
+});
+
+// FR-09 (Administrator only - BR-05)
+router.patch('/:slotId/status', authorize('ADMIN'), validate(slotIdParam, 'params'), validate(statusSchema), async (req, res, next) => {
+  try {
+    res.json(slotService.toDto(await slotService.setStatus(req.params.slotId, req.body.status)));
   } catch (err) {
     next(err);
   }

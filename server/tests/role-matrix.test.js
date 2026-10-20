@@ -17,6 +17,7 @@ const MATRIX = [
   ['get', '/slots', ['ATTENDANT', 'ADMIN']],
   ['get', '/slots/summary', ['ATTENDANT', 'ADMIN']],
   ['post', '/slots', ['ADMIN']],
+  ['patch', '/slots/A-01/status', ['ADMIN']],
   ['post', '/parking/entry', ['ATTENDANT', 'ADMIN']],
   ['post', '/parking/exit', ['ATTENDANT', 'ADMIN']],
   ['post', '/parking/T-20261019-0001/confirm-exit', ['ATTENDANT', 'ADMIN']],
