@@ -7,6 +7,7 @@ import Entry from './pages/Entry.jsx';
 import Exit from './pages/Exit.jsx';
 import Slots from './pages/Slots.jsx';
 import Search from './pages/Search.jsx';
+import Users from './pages/Users.jsx';
 
 // Navigation shows only the functions allowed for the logged-in role (SRS 3.1).
 // Each entry: [path, label, roles allowed].
@@ -17,6 +18,7 @@ export const NAV = [
   ['/search', 'Search', ['ATTENDANT', 'ADMIN']],
   ['/vehicles', 'Register Vehicle', ['ATTENDANT', 'ADMIN']],
   ['/admin/slots', 'Slot Management', ['ADMIN']],
+  ['/admin/users', 'Users', ['ADMIN']],
 ];
 
 const ROLE_LABEL = { ATTENDANT: 'Parking Attendant', ADMIN: 'Administrator' };
@@ -58,6 +60,7 @@ export default function App() {
             <Route path="/exit" element={<RequireAuth roles={['ATTENDANT', 'ADMIN']}><Exit /></RequireAuth>} />
             <Route path="/vehicles" element={<RequireAuth roles={['ATTENDANT', 'ADMIN']}><Vehicles /></RequireAuth>} />
             <Route path="/admin/slots" element={<RequireAuth roles={['ADMIN']}><SlotAdmin /></RequireAuth>} />
+            <Route path="/admin/users" element={<RequireAuth roles={['ADMIN']}><Users /></RequireAuth>} />
             <Route path="*" element={<RequireAuth><Slots /></RequireAuth>} />
           </Routes>
         </main>
