@@ -45,8 +45,27 @@ async function release({ slotId, session }) {
   );
 }
 
+// FR-09: the Administrator sets a slot Unavailable or back to Available - never while Occupied.
+async function setStatus(slotId, status) {
+  const id = String(slotId).trim().toUpperCase();
+  const slot = await Slot.findOneAndUpdate(
+    { slotId: id, status: { $ne: SLOT_STATUS.OCCUPIED } },
+    { $set: { status, lastUpdated: new Date() } },
+    { new: true },
+  );
+  if (slot) return slot;
+  if (await Slot.exists({ slotId: id })) {
+    throw new AppError(409, 'SLOT_OCCUPIED', `Slot ${id} is Occupied and cannot be changed until the vehicle leaves`, 'slotId');
+  }
+  throw new AppError(404, 'SLOT_NOT_FOUND', `Slot ${id} not found`, 'slotId');
+}
+
+function listSlots() {
+  return Slot.find().sort({ slotId: 1 });
+}
+
 function toDto(s) {
   return { slotId: s.slotId, slotType: s.slotType, status: s.status, lastUpdated: s.lastUpdated };
 }
 
-module.exports = { createSlot, allocate, release, toDto };
+module.exports = { createSlot, allocate, release, setStatus, listSlots, toDto };
