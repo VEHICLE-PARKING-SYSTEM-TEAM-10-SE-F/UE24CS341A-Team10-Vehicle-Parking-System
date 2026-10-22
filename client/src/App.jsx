@@ -1,36 +1,61 @@
-import { useEffect, useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
-import { api } from './api.js';
+import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
+import { AuthProvider, RequireAuth, useAuth } from './auth.jsx';
+import Login from './pages/Login.jsx';
+
+// Navigation shows only the functions allowed for the logged-in role (SRS 3.1).
+// Each entry: [path, label, roles allowed].
+export const NAV = [
+  ['/', 'Home', ['ATTENDANT', 'ADMIN']],
+];
+
+const ROLE_LABEL = { ATTENDANT: 'Parking Attendant', ADMIN: 'Administrator' };
+
+function TopBar() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  return (
+    <header className="topbar">
+      <strong>🅿 Vehicle Parking System</strong>
+      {user && (
+        <>
+          <nav>
+            {NAV.filter(([, , roles]) => roles.includes(user.role)).map(([path, label]) => (
+              <NavLink key={path} to={path} end={path === '/'}>{label}</NavLink>
+            ))}
+          </nav>
+          <div className="user">
+            <span>{user.username} · {ROLE_LABEL[user.role]}</span>
+            <button className="secondary" onClick={async () => { await logout(); navigate('/login'); }}>Logout</button>
+          </div>
+        </>
+      )}
+    </header>
+  );
+}
 
 function Home() {
-  const [health, setHealth] = useState('checking…');
-
-  useEffect(() => {
-    api('/health')
-      .then((h) => setHealth(`API ${h.status}, database ${h.database}`))
-      .catch(() => setHealth('API not reachable'));
-  }, []);
-
+  const { user } = useAuth();
   return (
     <section className="card">
-      <h2>Vehicle Parking System</h2>
-      <p>Team 10 · SE Mini-Project (UE24CS341A)</p>
-      <p className="muted">{health}</p>
+      <h2>Welcome, {user.name}</h2>
+      <p className="muted">Use the menu above to work with vehicles, slots and parking.</p>
     </section>
   );
 }
 
 export default function App() {
   return (
-    <div className="app">
-      <header className="topbar">
-        <strong>🅿 Vehicle Parking System</strong>
-      </header>
-      <main>
-        <Routes>
-          <Route path="*" element={<Home />} />
-        </Routes>
-      </main>
-    </div>
+    <AuthProvider>
+      <div className="app">
+        <TopBar />
+        <main>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<RequireAuth><Home /></RequireAuth>} />
+            <Route path="*" element={<RequireAuth><Home /></RequireAuth>} />
+          </Routes>
+        </main>
+      </div>
+    </AuthProvider>
   );
 }
