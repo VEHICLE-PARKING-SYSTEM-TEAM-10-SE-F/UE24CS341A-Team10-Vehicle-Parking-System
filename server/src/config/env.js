@@ -10,8 +10,17 @@ function required(name) {
   return value;
 }
 
+function jwtSecret() {
+  const value = required('JWT_SECRET');
+  if (value.length < 32) {
+    throw new Error('JWT_SECRET must be at least 32 characters long.');
+  }
+  return value;
+}
+
 module.exports = {
   required,
+  jwtSecret,
   port: Number(process.env.PORT || 5000),
   mongodbUri: () => required('MONGODB_URI'),
   corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:5173',
