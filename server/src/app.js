@@ -7,6 +7,9 @@ const logger = require('./utils/logger');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 const { rejectUnsafeInput } = require('./middleware/validate');
 const authRoutes = require('./routes/auth.routes');
+const vehicleRoutes = require('./routes/vehicle.routes');
+const slotRoutes = require('./routes/slot.routes');
+const parkingRoutes = require('./routes/parking.routes');
 
 function createApp() {
   const app = express();
@@ -30,6 +33,9 @@ function createApp() {
     res.json({ status: 'ok', database: mongoose.connection.readyState === 1 ? 'up' : 'down' });
   });
   api.use('/auth', authRoutes);
+  api.use('/vehicles', vehicleRoutes);
+  api.use('/slots', slotRoutes);
+  api.use('/parking', parkingRoutes);
   app.use('/api/v1', api);
 
   app.use(notFound);
