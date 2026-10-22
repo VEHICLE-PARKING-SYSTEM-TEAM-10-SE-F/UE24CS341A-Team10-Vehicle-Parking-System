@@ -1,11 +1,19 @@
 import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
 import { AuthProvider, RequireAuth, useAuth } from './auth.jsx';
 import Login from './pages/Login.jsx';
+import Vehicles from './pages/Vehicles.jsx';
+import SlotAdmin from './pages/SlotAdmin.jsx';
+import Entry from './pages/Entry.jsx';
+import Exit from './pages/Exit.jsx';
 
 // Navigation shows only the functions allowed for the logged-in role (SRS 3.1).
 // Each entry: [path, label, roles allowed].
 export const NAV = [
   ['/', 'Home', ['ATTENDANT', 'ADMIN']],
+  ['/entry', 'Entry', ['ATTENDANT', 'ADMIN']],
+  ['/exit', 'Exit', ['ATTENDANT', 'ADMIN']],
+  ['/vehicles', 'Vehicles', ['ATTENDANT', 'ADMIN']],
+  ['/admin/slots', 'Slot Management', ['ADMIN']],
 ];
 
 const ROLE_LABEL = { ATTENDANT: 'Parking Attendant', ADMIN: 'Administrator' };
@@ -52,6 +60,10 @@ export default function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<RequireAuth><Home /></RequireAuth>} />
+            <Route path="/entry" element={<RequireAuth roles={['ATTENDANT', 'ADMIN']}><Entry /></RequireAuth>} />
+            <Route path="/exit" element={<RequireAuth roles={['ATTENDANT', 'ADMIN']}><Exit /></RequireAuth>} />
+            <Route path="/vehicles" element={<RequireAuth roles={['ATTENDANT', 'ADMIN']}><Vehicles /></RequireAuth>} />
+            <Route path="/admin/slots" element={<RequireAuth roles={['ADMIN']}><SlotAdmin /></RequireAuth>} />
             <Route path="*" element={<RequireAuth><Home /></RequireAuth>} />
           </Routes>
         </main>
