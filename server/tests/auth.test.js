@@ -112,3 +112,11 @@ describe('SEC-05 input validation (TC-SEC-05)', () => {
     expect(res.body.token).toBeUndefined();
   });
 });
+
+describe('SEC-01 / SEC-02 security compliance (TC-SEC-01)', () => {
+  it('rejects access without authorization header on protected routes', async () => {
+    const res = await request(app).get('/api/v1/auth/me');
+    expect(res.status).toBe(401);
+    expect(res.body.error.code).toBe('UNAUTHENTICATED');
+  });
+});
