@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth.jsx';
 
 export default function Login() {
-  const { login } = useAuth();
+  const { login, notice } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [username, setUsername] = useState('');
@@ -29,6 +29,7 @@ export default function Login() {
   return (
     <section className="card" style={{ maxWidth: 380, margin: '40px auto' }}>
       <h2>Log in</h2>
+      {notice && !error && <div className="banner error" role="status">{notice}</div>}
       {error && <div className="banner error" role="alert">{error}</div>}
       <form onSubmit={submit}>
         <div className="row">
