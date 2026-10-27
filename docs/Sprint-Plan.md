@@ -80,3 +80,22 @@ SE Mini-Project **Part-2**. The backlog has one GitHub issue per functional and 
 4. The repo owner (@pramitiudupa) reviews and merges the PR.
 5. Any deviation from the SRS, SAD or Test Plan is noted in the PR and recorded in `docs/Deviations.md` for the final demo.
 6. At the end of each sprint, a short video of the working product is uploaded to `docs/videos/` (1 minute for Sprint 1, 2 minutes for Sprint 2).
+
+## Sprint reviews
+
+### Sprint 1 (19–23 Oct 2026) – closed 27 Oct
+
+| | Stories | Story points |
+|---|---|---|
+| Planned | 24 | 63 |
+| Completed (merged into `main`) | 18 | 44 |
+| Carried over to Sprint 2 | 6 (FR-10, FR-16, FR-17, FR-18, FR-20, FR-21) | 15 |
+
+- Merged: #39 setup and CI (Pramiti), #40 authentication and security (Ramitha), #41 vehicles, slots, entry and exit (Snehitha). FR-09 from Sprint 2 was also merged with #41.
+- The carried-over stories are finished and in review in PR #42 (CI green). They close when it is merged.
+- Demo video: `docs/videos/Sprint1_Demo_Team10.mp4`.
+
+### Sprint 2 (26–30 Oct 2026) – in progress
+
+Open PRs, merged in this order: #42 (Sprint 1 carry-over), then the user management / session timeout / reliability tests branch (Ramitha), then the performance tests branch (Snehitha), then the fee rates / history / report / HTTPS / browser tests branch (Pramiti).
+Demo video: `docs/videos/Sprint2_Demo_Team10.mp4`.
