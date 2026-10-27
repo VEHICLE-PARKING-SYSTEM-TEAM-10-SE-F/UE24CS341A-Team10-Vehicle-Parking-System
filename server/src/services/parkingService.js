@@ -10,12 +10,16 @@ const { RECORD_STATUS } = require('../models/constants');
 const IST_OFFSET_MS = 330 * 60 * 1000;
 
 // Ticket numbers like T-20261019-0042: date in IST plus a per-day sequence.
-async function nextTicketNo(now, session) {
+// The sequence is taken with one atomic $inc *before* the entry transaction: every entry
+// shares this counter, so doing it inside the transaction made concurrent entries conflict
+// and retry (NFR-02). A number taken by an entry that is then refused is simply not used,
+// so ticket numbers stay unique, though there may be gaps.
+async function nextTicketNo(now) {
   const day = new Date(now.getTime() + IST_OFFSET_MS).toISOString().slice(0, 10).replace(/-/g, '');
   const counter = await Counter.findOneAndUpdate(
     { _id: `ticket-${day}` },
     { $inc: { seq: 1 } },
-    { upsert: true, new: true, session },
+    { upsert: true, new: true },
   );
   return `T-${day}-${String(counter.seq).padStart(4, '0')}`;
 }
@@ -33,13 +37,13 @@ async function recordEntry({ regNo, slotId }, user) {
     throw new AppError(409, 'VEHICLE_ALREADY_PARKED', `Vehicle ${vehicle.regNo} is already parked`, 'regNo');
   }
 
+  const ticketNo = await nextTicketNo(new Date());
   const session = await mongoose.startSession();
   try {
     let record;
     await session.withTransaction(async () => {
       const now = new Date();
       const slot = await slotService.allocate({ vehicleType: vehicle.vehicleType, vehicleId: vehicle._id, slotId, session });
-      const ticketNo = await nextTicketNo(now, session);
       [record] = await ParkingRecord.create([{
         ticketNo,
         vehicleId: vehicle._id,
