@@ -64,8 +64,21 @@ function listSlots() {
   return Slot.find().sort({ slotId: 1 });
 }
 
+// FR-10: counts per slot type.
+async function summary() {
+  const rows = await Slot.aggregate([{ $group: { _id: { type: '$slotType', status: '$status' }, n: { $sum: 1 } } }]);
+  const byType = {};
+  for (const { _id, n } of rows) {
+    byType[_id.type] = byType[_id.type] || { slotType: _id.type, total: 0, available: 0, occupied: 0, unavailable: 0 };
+    byType[_id.type].total += n;
+    byType[_id.type][_id.status.toLowerCase()] += n;
+  }
+  const list = Object.values(byType).sort((a, b) => a.slotType.localeCompare(b.slotType));
+  return { total: list.reduce((t, x) => t + x.total, 0), byType: list };
+}
+
 function toDto(s) {
   return { slotId: s.slotId, slotType: s.slotType, status: s.status, lastUpdated: s.lastUpdated };
 }
 
-module.exports = { createSlot, allocate, release, setStatus, listSlots, toDto };
+module.exports = { createSlot, allocate, release, setStatus, listSlots, summary, toDto };
