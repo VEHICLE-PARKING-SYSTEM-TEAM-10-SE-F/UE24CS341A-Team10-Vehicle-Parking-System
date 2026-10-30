@@ -92,10 +92,12 @@ SE Mini-Project **Part-2**. The backlog has one GitHub issue per functional and 
 | Carried over to Sprint 2 | 6 (FR-10, FR-16, FR-17, FR-18, FR-20, FR-21) | 15 |
 
 - Merged: #39 setup and CI (Pramiti), #40 authentication and security (Ramitha), #41 vehicles, slots, entry and exit (Snehitha). FR-09 from Sprint 2 was also merged with #41.
-- The carried-over stories are finished and in review in PR #42 (CI green). They close when it is merged.
+- The carried-over stories were finished in PR #42, merged on 29 Oct.
 - Demo video: `docs/videos/Sprint1_Demo_Team10.mp4`.
 
-### Sprint 2 (26–30 Oct 2026) – in progress
+### Sprint 2 (26–30 Oct 2026)
 
-Open PRs, merged in this order: #42 (Sprint 1 carry-over), then the user management / session timeout / reliability tests branch (Ramitha), then the performance tests branch (Snehitha), then the fee rates / history / report / HTTPS / browser tests branch (Pramiti).
-Demo video: `docs/videos/Sprint2_Demo_Team10.mp4`.
+- Merged: #42 Sprint 1 carry-over (Pramiti), #44 user management, session timeout, concurrency and reliability tests (Ramitha), #45 performance tests and the concurrent-entry fix (Snehitha).
+- Fee rates, parking history, occupancy report, HTTPS and browser tests (Pramiti): in review in the PR from `s2/rates-history-report-https`.
+- Still to be done by the team: the TC-USAB-01 session with three first-time users and the Firefox check (see `docs/test-results/portability-usability.md`).
+- Demo video: `docs/videos/Sprint2_Demo_Team10.mp4`.
