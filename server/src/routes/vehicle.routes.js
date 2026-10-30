@@ -32,7 +32,7 @@ router.post('/', authorize('ATTENDANT', 'ADMIN'), validate(vehicleSchema), async
   }
 });
 
-// FR-20, FR-21: search by registration number and show the current status
+// FR-20, FR-21, FR-22: search by registration number; current status and parking history (SAD SD-4)
 const searchSchema = Joi.object({
   regNo: Joi.string().trim().pattern(REG_NO).required()
     .messages({ 'string.pattern.base': 'regNo must be 4 to 15 letters or digits (hyphens and spaces allowed)' }),
@@ -41,7 +41,11 @@ const searchSchema = Joi.object({
 router.get('/search', authorize('ATTENDANT', 'ADMIN'), validate(searchSchema, 'query'), async (req, res, next) => {
   try {
     const vehicle = await vehicleService.findActiveByRegNo(req.validated.regNo);
-    res.json({ vehicle: vehicleService.toDto(vehicle), current: await parkingService.currentStatus(vehicle._id) });
+    const [current, history] = await Promise.all([
+      parkingService.currentStatus(vehicle._id),
+      parkingService.history(vehicle._id),
+    ]);
+    res.json({ vehicle: vehicleService.toDto(vehicle), current, history });
   } catch (err) {
     next(err);
   }

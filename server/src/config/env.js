@@ -25,4 +25,10 @@ module.exports = {
   mongodbUri: () => required('MONGODB_URI'),
   corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:5173',
   nodeEnv: process.env.NODE_ENV || 'development',
+  // SEC-04 (deployment): HTTPS settings - see docs/Deployment.md.
+  requireHttps: process.env.REQUIRE_HTTPS === 'true',
+  trustProxy: process.env.TRUST_PROXY === 'true',
+  tlsCertFile: process.env.TLS_CERT_FILE || null,
+  tlsKeyFile: process.env.TLS_KEY_FILE || null,
+  httpsPort: Number(process.env.HTTPS_PORT || 5443),
 };

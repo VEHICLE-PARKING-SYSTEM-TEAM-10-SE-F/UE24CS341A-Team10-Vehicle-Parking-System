@@ -84,3 +84,22 @@ th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--border);
 .status.AVAILABLE { color: var(--available); }
 .status.OCCUPIED { color: var(--occupied); }
 .status.UNAVAILABLE { color: var(--unavailable); }
+
+/* NFR-07: usable from 360 px wide - nothing overflows the page horizontally
+   (wide tables scroll inside .table-wrap instead). */
+img, table { max-width: 100%; }
+@media (max-width: 600px) {
+  .topbar { padding: 8px 12px; }
+  .topbar nav { width: 100%; order: 3; }
+  .topbar nav a { padding: 6px 8px; font-size: 0.95rem; }
+  .user { width: 100%; justify-content: space-between; }
+  main { padding: 12px; }
+  .card { padding: 12px; }
+  input, select { width: 100%; }
+  th, td { padding: 6px; font-size: 0.9rem; }
+}
+
+@media print {
+  .topbar, button { display: none; }
+  .card { border: 0; }
+}

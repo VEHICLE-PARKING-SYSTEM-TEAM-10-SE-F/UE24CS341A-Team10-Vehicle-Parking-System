@@ -57,6 +57,29 @@ export default function Search() {
           </table>
         </div>
       )}
+      {found && (
+        <>
+          <h3>Parking history</h3>
+          {found.history.length === 0 ? <p className="muted">No completed visits yet.</p> : (
+            <div className="table-wrap">
+              <table>
+                <thead><tr><th>Entry time</th><th>Exit time</th><th>Slot</th><th>Duration</th><th>Fee</th></tr></thead>
+                <tbody>
+                  {found.history.map((h) => (
+                    <tr key={h.ticketNo}>
+                      <td>{formatTime(h.entryTime)}</td>
+                      <td>{formatTime(h.exitTime)}</td>
+                      <td>{h.slotId}</td>
+                      <td>{h.durationMin} min</td>
+                      <td>₹{h.fee}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </>
+      )}
     </section>
   );
 }

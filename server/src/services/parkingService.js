@@ -150,6 +150,19 @@ async function currentStatus(vehicleId) {
   };
 }
 
+// FR-22: past (Completed) records of a vehicle, most recent first.
+async function history(vehicleId) {
+  const records = await ParkingRecord.find({ vehicleId, status: RECORD_STATUS.COMPLETED }).sort({ entryTime: -1 }).limit(200);
+  return records.map((r) => ({
+    ticketNo: r.ticketNo,
+    slotId: r.slotId,
+    entryTime: r.entryTime,
+    exitTime: r.exitTime,
+    durationMin: Math.round(r.durationMin),
+    fee: feeService.rupees(r.feePaise),
+  }));
+}
+
 function toDto(r) {
   return {
     ticketNo: r.ticketNo,
@@ -174,5 +187,5 @@ function toSummary({ record, fee }) {
 }
 
 module.exports = {
-  recordEntry, recordExit, confirmExit, cancelExit, currentStatus, findActiveRecord, toDto, toSummary,
+  recordEntry, recordExit, confirmExit, cancelExit, currentStatus, history, findActiveRecord, toDto, toSummary,
 };
