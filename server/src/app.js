@@ -10,6 +10,7 @@ const authRoutes = require('./routes/auth.routes');
 const vehicleRoutes = require('./routes/vehicle.routes');
 const slotRoutes = require('./routes/slot.routes');
 const parkingRoutes = require('./routes/parking.routes');
+const userRoutes = require('./routes/user.routes');
 
 function createApp() {
   const app = express();
@@ -36,6 +37,7 @@ function createApp() {
   api.use('/vehicles', vehicleRoutes);
   api.use('/slots', slotRoutes);
   api.use('/parking', parkingRoutes);
+  api.use('/users', userRoutes);
   app.use('/api/v1', api);
 
   app.use(notFound);
